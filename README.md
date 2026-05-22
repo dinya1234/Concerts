@@ -40,7 +40,7 @@ API (Retrofit) → Repository → Room (кэш) → Flow → ViewModel (UiState)
 - **Архитектура:** MVVM (ViewModel + StateFlow)
 - **Управление состоянием:** UiState / UiEvent (sealed interface)
 - **Локальная БД:** Room (Flow, suspend)
-- **Сеть:** Retrofit + Gson
+- **Сеть:** Retrofit
 - **Навигация:** Navigation Compose (2 экрана, передача id)
 - **Асинхронность:** Kotlin Coroutines (viewModelScope, Dispatchers.IO)
 - **DI:** Ручное внедрение (AppModule)
