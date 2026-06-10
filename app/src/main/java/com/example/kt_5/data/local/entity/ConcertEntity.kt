@@ -11,5 +11,6 @@ data class ConcertEntity(
     val date: String,
     val city: String,
     val description: String,
-    val price: Double
+    val price: Double,
+    val isFavorite: Boolean = false
 )

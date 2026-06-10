@@ -13,6 +13,6 @@ data class ConcertDto(
     val price: Double
 )
 
-fun ConcertDto.toEntity() = ConcertEntity(
-    id, artist, venue, date, city, description, price
+fun ConcertDto.toEntity(isFavorite: Boolean = false) = ConcertEntity(
+    id, artist, venue, date, city, description, price, isFavorite
 )

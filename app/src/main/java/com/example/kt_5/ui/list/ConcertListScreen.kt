@@ -9,15 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.kt_5.data.local.entity.ConcertEntity
 
 @Composable
 fun ConcertListScreen(
     viewModel: ConcertListViewModel,
-    onConcertClick: (Int) -> Unit
+    onConcertClick: (Int) -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -26,10 +29,35 @@ fun ConcertListScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = "Афиша концертов",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Афиша концертов",
+                style = MaterialTheme.typography.headlineLarge
+            )
+            TextButton(onClick = onProfileClick) {
+                Text("Кабинет")
+            }
+        }
+
+        var cityFilter by remember { mutableStateOf("") }
+
+        OutlinedTextField(
+            value = cityFilter,
+            onValueChange = {
+                cityFilter = it
+                viewModel.onEvent(ConcertListUiEvent.CityFilterChanged(it))
+            },
+            label = { Text("Фильтр по городу") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            singleLine = true
         )
 
         when (val state = uiState) {
@@ -43,6 +71,15 @@ fun ConcertListScreen(
             }
 
             is ConcertListUiState.Success -> {
+                if (state.offlineMessage != null) {
+                    Text(
+                        text = state.offlineMessage,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+
                 LazyColumn(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -62,6 +99,10 @@ fun ConcertListScreen(
                                 Text(
                                     text = concert.venue,
                                     style = MaterialTheme.typography.bodyLarge
+                                )
+                                Text(
+                                    text = concert.city,
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
                                     text = concert.date,
